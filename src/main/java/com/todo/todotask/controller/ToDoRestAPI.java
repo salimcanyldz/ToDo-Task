@@ -54,6 +54,6 @@ public class ToDoRestAPI {
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable int id){
         taskRepository.deleteById(id);
-        return new ResponseEntity<>("Task deleted.", HttpStatus.OK);
+        return new ResponseEntity<>("{\"task\":" + id + ", \"status\": \"deleted\"}", HttpStatus.OK);
     }
 }

@@ -1,0 +1,160 @@
+openapi: 3.0.3
+
+info:
+  title: TODO Task API
+  version: 1.0.0
+  description: Welcome to TODO Task project api. 
+              This API uses MySQL integration to save your task 
+              to the database system. 
+
+servers:
+  - url: htpp://localhost:8080
+
+tags:
+  - name: Task
+    description: Create/delete and list tasks.
+
+paths:
+  /:
+    description: List all the tasks.
+    get:
+      tags:
+        - Task
+      description: List all tasks.
+      responses:
+        200:
+          description: Successful.
+          content:
+            application/json:
+              schema:
+                title: Success
+                description: List of all tasks.
+                type: array
+                items:
+                  properties:
+                    taskId:
+                      type: integer
+                      example: 1
+                    task:
+                      type: string
+                      example: task
+                    addedDate:
+                      type: string
+                      example: 13/07/2021
+  /new-task:
+    post:
+      description: add new task to the db.
+      tags:
+        - Task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  example: string
+      responses:
+        200:
+          description: Successful.
+          content:
+            application/json:
+              schema:
+                title: Success
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  task:
+                    type: string
+                    example: "string"
+                  addedDate:
+                    type: integer
+                    example: 1626203419528
+  /update-task/{id}:
+    put:
+      description: Update the task content. 
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  example: string
+      responses:
+        200:
+          description: Successful.
+          content:
+            application/json:
+              schema:
+                title: Success
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  task:
+                    type: string
+                    example: string
+                  addedDate:
+                    type: integer
+                    example: 1626203419528
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: Failed
+                type: object
+                properties:
+                  errorCode:
+                    description: task update failure.
+                    type: object
+                    properties:
+                      InternalServerError:
+                        type: object
+                        example: null
+                  errorMessage:
+                    type: string
+                    example: string
+  /remove/{id}:
+    delete:
+      description: remove task from db.
+      tags:
+        - Task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful.
+          content:
+            application/json:
+              schema:
+                title: Success
+                type: object
+                properties:
+                  task:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    example: deleted
+
+
+                  
