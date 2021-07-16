@@ -23,24 +23,13 @@ public class ToDoRestAPI {
     return new ResponseEntity<>(taskRepository.findAll(), HttpStatus.OK);
   }
 
-  @GetMapping("/task/{id}")
-  public ResponseEntity<String> getSpecificTask(@PathVariable int id) {
-    return taskRepository
-        .findById(id)
-        .map(
-            task -> {
-              try {
-                return new ResponseEntity<>(
-                    new ObjectMapper().writeValueAsString(task), HttpStatus.OK);
-              } catch (Exception e) {
-                return new ResponseEntity<>(
-                    "{\"status\": \"Internal Server Error\"}", HttpStatus.INTERNAL_SERVER_ERROR);
-              }
-            })
-        .orElseGet(
-            () -> {
-              return new ResponseEntity<>("{\"status\": \"Not Found\"}", HttpStatus.NOT_FOUND);
-            });
+  @GetMapping("task/{id}")
+  public ResponseEntity<String> getTest(@PathVariable int id) throws JsonProcessingException {
+      Task t = taskRepository.findTaskByID(id);
+      if (t == null){
+          return new ResponseEntity<>("null", HttpStatus.NOT_FOUND);
+      }
+      return new ResponseEntity<>(new ObjectMapper().writeValueAsString(t), HttpStatus.OK);
   }
 
   @PostMapping("/task")
@@ -52,35 +41,27 @@ public class ToDoRestAPI {
     return new ResponseEntity<>(new ObjectMapper().writeValueAsString(t), HttpStatus.OK);
   }
 
-  @PutMapping("/task/{id}")
+  @PutMapping("/test/{id}")
   @Transactional
-  public ResponseEntity<String> updateTask(
-      @PathVariable int id, @RequestBody TaskRequest updatedTask) {
-    return taskRepository
-        .findById(id)
-        .map(
-            task -> {
-              task.setTask(updatedTask.getTask());
-              task.setAddedDate(new Date(new java.util.Date().getTime()));
-              taskRepository.save(task);
-              try {
-                return new ResponseEntity<>(
-                    new ObjectMapper().writeValueAsString(task), HttpStatus.OK);
-              } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(
-                    "{\"status\": \"Internal Server Error\"}", HttpStatus.INTERNAL_SERVER_ERROR);
-              }
-            })
-        .orElseGet(
-            () -> {
-              return new ResponseEntity<>("{\"status\": \"Not Found\"}", HttpStatus.NOT_FOUND);
-            });
+  public ResponseEntity<String> testPut(@PathVariable int id,
+                                        @RequestBody TaskRequest update)
+          throws JsonProcessingException {
+
+      Task t = taskRepository.findTaskByID(id);
+      if (t == null){
+          return new ResponseEntity<>("null", HttpStatus.NOT_FOUND);
+      }
+      else{
+          t.setTask(update.getTask());
+          t.setAddedDate(new Date(new java.util.Date().getTime()));
+          taskRepository.save(t);
+      }
+      return new ResponseEntity<>(new ObjectMapper().writeValueAsString(t), HttpStatus.OK);
   }
 
   @DeleteMapping("/task/{id}")
   public ResponseEntity<String> deleteTask(@PathVariable int id) {
     taskRepository.deleteById(id);
-    return new ResponseEntity<>("{\"task\":" + id + ", \"status\": \"deleted\"}", HttpStatus.OK);
+    return new ResponseEntity<>("", HttpStatus.OK);
   }
 }
